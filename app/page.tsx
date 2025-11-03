@@ -19,7 +19,6 @@ function HomePageContent() {
       description: "Verify your identity with government-issued documents",
       route: "/verify/identity",
       status: user.kyc.identity,
-      animationClass: "animate-float-1",
     },
     {
       type: "Human",
@@ -28,7 +27,6 @@ function HomePageContent() {
       description: "Prove you're human with liveness detection",
       route: "/verify/human",
       status: user.kyc.human,
-      animationClass: "animate-float-2",
     },
     {
       type: "Age",
@@ -37,7 +35,6 @@ function HomePageContent() {
       description: "Verify your age without revealing your date of birth",
       route: "/verify/age",
       status: user.kyc.age,
-      animationClass: "animate-float-3",
     },
   ]
 
@@ -58,7 +55,7 @@ function HomePageContent() {
             return (
               <Card
                 key={credential.type}
-                className={`bg-white/5 backdrop-blur-sm border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] hover:shadow-[0_8px_32px_0_rgba(21,218,204,0.15)] transition-all duration-300 ${credential.animationClass}`}
+                className="bg-white/5 backdrop-blur-sm border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] hover:shadow-[0_8px_32px_0_rgba(21,218,204,0.15)] transition-all duration-300"
               >
                 <CardContent className="p-6 md:p-8">
                   <div className="mb-6 flex justify-center">
@@ -75,7 +72,9 @@ function HomePageContent() {
                   {/* Icon and Title Section */}
                   <div className="flex flex-col items-center text-center mb-6">
                     {/* Neomorphic Icon Container */}
-                    <div className="relative mb-4"></div>
+                    <div className="relative mb-4">
+                      
+                    </div>
 
                     {/* Title */}
                     <h3 className="text-xl md:text-2xl font-bold text-[#E6E7EF] mb-2">{credential.title}</h3>
