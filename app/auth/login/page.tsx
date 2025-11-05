@@ -14,12 +14,26 @@ export default function LoginPage() {
   const { user, status, loginWithGoogle, loginWithApple } = useAuthStore()
 
   const redirect = searchParams.get("redirect") || "/"
+  const returnUrl = searchParams.get("returnUrl") || null
 
   useEffect(() => {
     if (status === "authenticated" && user) {
+      if (returnUrl) {
+        const payload = {
+          authenticated: true,
+          user: {
+            email: user.email,
+            wallet: user.walletAddress,
+          },
+        }
+        const token = encodeURIComponent(btoa(JSON.stringify(payload)))
+        const separator = returnUrl.includes("?") ? "&" : "?"
+        window.location.href = `${returnUrl}${separator}token=${token}`
+        return
+      }
       router.push(redirect)
     }
-  }, [status, user, router, redirect])
+  }, [status, user, router, redirect, returnUrl])
 
   const handleGoogleLogin = async () => {
     await loginWithGoogle()
