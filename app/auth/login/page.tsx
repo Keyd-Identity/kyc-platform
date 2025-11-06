@@ -13,6 +13,7 @@ export default function LoginPage() {
   const searchParams = useSearchParams()
   const { user, status, loginWithGoogle, loginWithApple } = useAuthStore()
   const [hasLoggedIn, setHasLoggedIn] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const redirect = searchParams.get("redirect") || "/"
   const returnUrl = searchParams.get("returnUrl") || null
@@ -37,13 +38,25 @@ export default function LoginPage() {
   }, [hasLoggedIn, status, user, router, redirect, returnUrl])
 
   const handleGoogleLogin = async () => {
-    setHasLoggedIn(true)
-    await loginWithGoogle()
+    try {
+      setHasLoggedIn(true)
+      setError(null)
+      await loginWithGoogle()
+    } catch (err: any) {
+      setError(err.message || "Error al iniciar sesión con Google")
+      setHasLoggedIn(false)
+    }
   }
 
   const handleAppleLogin = async () => {
-    setHasLoggedIn(true)
-    await loginWithApple()
+    try {
+      setHasLoggedIn(true)
+      setError(null)
+      await loginWithApple()
+    } catch (err: any) {
+      setError(err.message || "Error al iniciar sesión con Apple")
+      setHasLoggedIn(false)
+    }
   }
 
   const isLoading = status === "authenticating"
@@ -62,6 +75,11 @@ export default function LoginPage() {
         </CardHeader>
 
         <CardContent className="space-y-3">
+          {error && (
+            <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+              {error}
+            </div>
+          )}
           <Button
             onClick={handleGoogleLogin}
             disabled={isLoading}

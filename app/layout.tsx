@@ -1,6 +1,7 @@
 import type React from "react"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
+import Script from "next/script"
 import "./globals.css"
 import { Navbar } from "@/components/navbar"
 import { MobileTabBar } from "@/components/mobile-tab-bar"
@@ -31,6 +32,8 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>
       <body className={inter.className}>
+        <Script src="https://accounts.google.com/gsi/client" strategy="beforeInteractive" />
+        <Script src="https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js" strategy="beforeInteractive" />
         <SplashScreen />
         <Navbar />
         <main className="min-h-screen mobile-tab-bar-spacing">{children}</main>
