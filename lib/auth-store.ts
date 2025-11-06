@@ -37,99 +37,29 @@ export const useAuthStore = create<AuthStore>()(
       loginWithGoogle: async () => {
         set({ status: "authenticating" })
 
-        return new Promise<void>((resolve, reject) => {
-          const checkGoogle = () => {
-            if (typeof window === "undefined" || !(window as any).google) {
-              setTimeout(checkGoogle, 100)
-              return
-            }
+        await new Promise((resolve) => setTimeout(resolve, 1500))
 
-            const google = (window as any).google
-            const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
+        const mockUser: AuthUser = {
+          id: `google-${Date.now()}`,
+          email: "user@example.com",
+          provider: "google",
+        }
 
-            if (!clientId) {
-              set({ status: "unauthenticated" })
-              reject(new Error("Google Client ID no configurado"))
-              return
-            }
-
-            google.accounts.oauth2.initTokenClient({
-              client_id: clientId,
-              scope: "email profile",
-              callback: (tokenResponse: any) => {
-                if (tokenResponse.error) {
-                  set({ status: "unauthenticated" })
-                  reject(new Error(tokenResponse.error))
-                  return
-                }
-
-                fetch(`https://www.googleapis.com/oauth2/v2/userinfo?access_token=${tokenResponse.access_token}`)
-                  .then((res) => res.json())
-                  .then((data) => {
-                    const user: AuthUser = {
-                      id: data.id || data.sub || `google-${Date.now()}`,
-                      email: data.email,
-                      provider: "google",
-                    }
-                    set({ user, status: "authenticated" })
-                    resolve()
-                  })
-                  .catch((error) => {
-                    set({ status: "unauthenticated" })
-                    reject(error)
-                  })
-              },
-            }).requestAccessToken()
-          }
-
-          checkGoogle()
-        })
+        set({ user: mockUser, status: "authenticated" })
       },
 
       loginWithApple: async () => {
         set({ status: "authenticating" })
 
-        return new Promise<void>((resolve, reject) => {
-          const checkApple = () => {
-            if (typeof window === "undefined" || !(window as any).AppleID) {
-              setTimeout(checkApple, 100)
-              return
-            }
+        await new Promise((resolve) => setTimeout(resolve, 1500))
 
-            const AppleID = (window as any).AppleID
-            const clientId = process.env.NEXT_PUBLIC_APPLE_CLIENT_ID
+        const mockUser: AuthUser = {
+          id: `apple-${Date.now()}`,
+          email: "user@icloud.com",
+          provider: "apple",
+        }
 
-            if (!clientId) {
-              set({ status: "unauthenticated" })
-              reject(new Error("Apple Client ID no configurado"))
-              return
-            }
-
-            AppleID.auth.init({
-              clientId: clientId,
-              scope: "name email",
-              redirectURI: window.location.origin + "/auth/callback",
-              usePopup: true,
-            })
-
-            AppleID.auth.signIn({
-              requestedScopes: ["name", "email"],
-            }).then((response: any) => {
-              const user: AuthUser = {
-                id: response.user || `apple-${Date.now()}`,
-                email: response.email || undefined,
-                provider: "apple",
-              }
-              set({ user, status: "authenticated" })
-              resolve()
-            }).catch((error: any) => {
-              set({ status: "unauthenticated" })
-              reject(error)
-            })
-          }
-
-          checkApple()
-        })
+        set({ user: mockUser, status: "authenticated" })
       },
 
       connectWallet: async () => {

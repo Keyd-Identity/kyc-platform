@@ -38,25 +38,15 @@ export default function LoginPage() {
   }, [hasLoggedIn, status, user, router, redirect, returnUrl])
 
   const handleGoogleLogin = async () => {
-    try {
-      setHasLoggedIn(true)
-      setError(null)
-      await loginWithGoogle()
-    } catch (err: any) {
-      setError(err.message || "Error al iniciar sesión con Google")
-      setHasLoggedIn(false)
-    }
+    setHasLoggedIn(true)
+    setError(null)
+    await loginWithGoogle()
   }
 
   const handleAppleLogin = async () => {
-    try {
-      setHasLoggedIn(true)
-      setError(null)
-      await loginWithApple()
-    } catch (err: any) {
-      setError(err.message || "Error al iniciar sesión con Apple")
-      setHasLoggedIn(false)
-    }
+    setHasLoggedIn(true)
+    setError(null)
+    await loginWithApple()
   }
 
   const isLoading = status === "authenticating"
