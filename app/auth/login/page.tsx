@@ -21,16 +21,7 @@ export default function LoginPage() {
   useEffect(() => {
     if (hasLoggedIn && status === "authenticated" && user) {
       if (returnUrl) {
-        const payload = {
-          authenticated: true,
-          user: {
-            email: user.email,
-            wallet: user.walletAddress,
-          },
-        }
-        const token = encodeURIComponent(btoa(JSON.stringify(payload)))
-        const separator = returnUrl.includes("?") ? "&" : "?"
-        window.location.href = `${returnUrl}${separator}token=${token}`
+        router.push(`/verify/identity?returnUrl=${encodeURIComponent(returnUrl)}`)
         return
       }
       router.push(redirect)

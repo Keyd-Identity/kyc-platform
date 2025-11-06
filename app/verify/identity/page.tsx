@@ -13,11 +13,16 @@ import { useKYCStore } from "@/lib/store"
 import { generateCredentialHash, addLeafToMerkle, issueCredentialOnChain } from "@/lib/blockchain-utils"
 import { useToast } from "@/hooks/use-toast"
 import { AuthGuard } from "@/components/auth-guard"
+import { useSearchParams } from "next/navigation"
+import { useAuthStore } from "@/lib/auth-store"
 
 function IdentityVerificationPageContent() {
   const router = useRouter()
   const { toast } = useToast()
   const { user, addCredential, addAction } = useKYCStore()
+  const { user: authUser } = useAuthStore()
+  const searchParams = useSearchParams()
+  const returnUrl = searchParams.get("returnUrl") || null
   const [step, setStep] = useState(1)
   const [isProcessing, setIsProcessing] = useState(false)
   const [formData, setFormData] = useState({
@@ -117,7 +122,7 @@ function IdentityVerificationPageContent() {
         },
       }
 
-      addCredential(newCredential)
+      addCredential(newCredential as any)
       addAction({
         id: Date.now().toString(),
         type: "Identity",
@@ -125,6 +130,22 @@ function IdentityVerificationPageContent() {
         timestamp: new Date().toISOString(),
         txHash,
       })
+
+      if (returnUrl && authUser) {
+        const payload = {
+          authenticated: true,
+          verified: true,
+          credential: "identity",
+          user: {
+            email: authUser.email,
+            wallet: authUser.walletAddress,
+          },
+        }
+        const token = encodeURIComponent(btoa(JSON.stringify(payload)))
+        const separator = returnUrl.includes("?") ? "&" : "?"
+        window.location.href = `${returnUrl}${separator}token=${token}`
+        return
+      }
 
       toast({
         title: "Verification Complete!",
