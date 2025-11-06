@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useAuthStore } from "@/lib/auth-store"
 import { Button } from "@/components/ui/button"
@@ -12,12 +12,13 @@ export default function LoginPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { user, status, loginWithGoogle, loginWithApple } = useAuthStore()
+  const [hasLoggedIn, setHasLoggedIn] = useState(false)
 
   const redirect = searchParams.get("redirect") || "/"
   const returnUrl = searchParams.get("returnUrl") || null
 
   useEffect(() => {
-    if (status === "authenticated" && user) {
+    if (hasLoggedIn && status === "authenticated" && user) {
       if (returnUrl) {
         const payload = {
           authenticated: true,
@@ -33,13 +34,15 @@ export default function LoginPage() {
       }
       router.push(redirect)
     }
-  }, [status, user, router, redirect, returnUrl])
+  }, [hasLoggedIn, status, user, router, redirect, returnUrl])
 
   const handleGoogleLogin = async () => {
+    setHasLoggedIn(true)
     await loginWithGoogle()
   }
 
   const handleAppleLogin = async () => {
+    setHasLoggedIn(true)
     await loginWithApple()
   }
 
